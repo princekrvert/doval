@@ -8,7 +8,7 @@ import (
 )
 
 func Eachword(filepath string) []string {
-	words := []string{}
+
 	// Now check if the path of file is valid
 	_, err := os.Stat(filepath)
 	if err != nil {
@@ -30,9 +30,5 @@ func Eachword(filepath string) []string {
 
 	defer readFile.Close()
 
-	for _, line := range fileLines {
-		words = append(words, line)
-	}
-
-	return words
+	return fileLines
 }

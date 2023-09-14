@@ -8,6 +8,8 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 
 	"github.com/princekrvert/doval/word"
 	"github.com/spf13/cobra"
@@ -35,10 +37,19 @@ to quickly create a Cobra application.`,
 				// now convert the word list to sha256 and compare with given hash ..
 				hash := sha256.Sum256([]byte(word))
 				Hashstring, err := fmt.Printf("%x", hash)
+				fmt.Print("\033[H\033[2J")
 				if err != nil {
 					log.Fatal("Somthing went wrong,Please try again")
 				} else {
-					fmt.Println(Hashstring)
+					// check if the word maches the hash
+					if args[0] == strconv.Itoa(Hashstring) {
+						fmt.Println("\033[32;1m Match found")
+						fmt.Printf("%s Hash : String %d", args[0], Hashstring)
+						os.Exit(0)
+					} else {
+						fmt.Printf("Trying %s : ", word)
+						fmt.Println(Hashstring)
+					}
 				}
 
 			}
