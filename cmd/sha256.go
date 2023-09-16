@@ -7,9 +7,7 @@ package cmd
 import (
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"os"
-	"strconv"
 
 	"github.com/princekrvert/doval/word"
 	"github.com/spf13/cobra"
@@ -20,36 +18,27 @@ var Wordlist string
 // sha256Cmd represents the sha256 command
 var sha256Cmd = &cobra.Command{
 	Use:   "sha256",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Sha256 Hash ",
+	Long:  `Paste your Sha256 hash here`,
 	Run: func(cmd *cobra.Command, args []string) {
 		//Now check the sha256 hash and for word file if given
 		wordlist, _ := cmd.Flags().GetString("wordlist")
 		if wordlist != "" {
 			// now pass the path to the word package
-			words := word.Eachword(wordlist)
-			for _, word := range words {
+			words, Nooflines := word.Eachword(wordlist)
+			for index, word := range words {
 				// now convert the word list to sha256 and compare with given hash ..
 				hash := sha256.Sum256([]byte(word))
-				Hashstring, err := fmt.Printf("%x", hash)
-				fmt.Print("\033[H\033[2J")
-				if err != nil {
-					log.Fatal("Somthing went wrong,Please try again")
+				Hashstring := fmt.Sprintf("%x", hash)
+				fmt.Printf("\033[31;m Word count %d::%d\n", Nooflines, index+1)
+				if Hashstring == args[0] {
+					// match found
+					fmt.Printf("\033[32;1m Match found: ")
+					fmt.Printf("\033[35;1m Hash is :: %s", word)
+					os.Exit(0)
 				} else {
-					// check if the word maches the hash
-					if args[0] == strconv.Itoa(Hashstring) {
-						fmt.Println("\033[32;1m Match found")
-						fmt.Printf("%s Hash : String %d", args[0], Hashstring)
-						os.Exit(0)
-					} else {
-						fmt.Printf("Trying %s : ", word)
-						fmt.Println(Hashstring)
-					}
+					fmt.Printf("\033[33;1m Trying %s\n", word)
+
 				}
 
 			}

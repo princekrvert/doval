@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Eachword(filepath string) []string {
+func Eachword(filepath string) ([]string, int64) {
 
 	// Now check if the path of file is valid
 	_, err := os.Stat(filepath)
@@ -23,12 +23,13 @@ func Eachword(filepath string) []string {
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 	var fileLines []string
-
+	Nooflines := 0
 	for fileScanner.Scan() {
 		fileLines = append(fileLines, fileScanner.Text())
+		Nooflines++
 	}
 
 	defer readFile.Close()
 
-	return fileLines
+	return fileLines, int64(Nooflines)
 }
